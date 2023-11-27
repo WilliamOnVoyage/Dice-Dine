@@ -13,7 +13,7 @@ def main():
     st.title("Dice & Dine")
     m = folium.Map(location=(37.77, -122.47), tiles="cartodb positron")
     # Show maps
-    st_data = st_folium(m, width=725)
+    st_folium(m, width=725)
 
     # Conversation state
     if 'conversation' not in st.session_state:
