@@ -36,8 +36,6 @@ class DiceDineGPT(object):
             ],
             response_format={"type": "json_object"}
         )
-
-        logger.info(completion.choices[0].message)
         return completion
 
 
