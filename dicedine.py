@@ -1,11 +1,14 @@
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
+from dicedine.backend.gpt import DiceDineGPT
+
+gpt_client = DiceDineGPT()
 
 
 def get_bot_response(user_input):
-    # TODO: Dummy response
-    return "Dicer: I got you!"
+    ret = gpt_client.recommendation_assistant(user_input)
+    return ret.choices[0].message.content
 
 
 # Main App
