@@ -24,7 +24,9 @@ def geocode_address(address):
 def get_map_df(addresses: list[str]):
     geocodes = []
     for address in addresses:
-        geocodes.append(geocode_address(address))
+        lon, lat = geocode_address(address)
+        if lon and lat:
+            geocodes.append((lon, lat))
 
     df = pd.DataFrame(
         np.array(geocodes),
