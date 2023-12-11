@@ -4,13 +4,16 @@ import streamlit as st
 
 from dicedine.backend.gpt import DiceDineGPT
 from dicedine.backend.map import get_map_df
+from dicedine.utils.logger import MainLogger
 
 gpt_client = DiceDineGPT()
+
+logger = MainLogger.get_logger()
 
 
 def get_bot_response(user_input):
     ret = gpt_client.recommendation_assistant(user_input)
-    return ret
+    return ret.choices[0].message.content
 
 
 def parse_bot_response_address(response_text):
@@ -42,8 +45,8 @@ def main():
         st.session_state.conversation.append("You: " + user_input)
 
         # Get bot response and add to conversation
-        ret = get_bot_response(user_input)
-        response_text = ret.choices[0].message.content
+        response_text = get_bot_response(user_input)
+        logger.info(f"Returned text: {response_text}")
         st.session_state.conversation.append(response_text)
 
         address_df = parse_bot_response_address(response_text)
