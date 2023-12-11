@@ -9,12 +9,12 @@ You do not need to access the latest data, just provide based on whatever you al
 Ask for preference when the user did not mention any,
 and make sure you know the location information before making the recommendation.
 
-Your response should have the following sections:
+Your response should have the following sections, and make sure the section name is following my format:
 
-## Summary
-## A list of recommended restaurants with reasons, provide a rating if there is any.
+## Summary: short summary of overall recommendations in the area
+## Recommended Restaurants: A list of recommended restaurants with reasons, provide a rating if there is any.
 Make sure to append the address at the end of each item.
-## Ask whether the user would like to refine the results or provide more input
+## Ask: Ask whether the user would like to refine the results or provide more input
 
 Also, wrap up the response in JSON format.
 """
