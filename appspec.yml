@@ -1,0 +1,24 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/Dice-Dine
+permissions:
+  - object: /home/ubuntu/Dice-Dine/data
+    pattern: "*.csv"
+    owner: ubuntu
+    group: ubuntu
+    mode: 664
+    type:
+      - file
+  - object: /home/ubuntu/Dice-Dine
+    pattern: "data"
+    owner: ubuntu
+    group: ubuntu
+    mode: 774
+    type:
+      - directory
+hooks:
+  AfterInstall:
+    - location: scripts/post-install.sh
+      timeout: 180
