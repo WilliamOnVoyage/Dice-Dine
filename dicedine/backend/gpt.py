@@ -1,5 +1,8 @@
+import json
+
 from openai import OpenAI
 
+from dicedine.backend.map import get_map_df
 from dicedine.utils.logger import MainLogger
 
 SYSTEM_CONTENT = """
@@ -37,6 +40,27 @@ class DiceDineGPT(object):
             response_format={"type": "json_object"}
         )
         return completion
+
+
+def parse_bot_response_address(response_text):
+    addresses = []
+    ret_json = json.loads(response_text)["Recommended Restaurants"]
+    for _, item in enumerate(ret_json):
+        addresses.append(item["Address"])
+
+    return get_map_df(addresses)
+
+
+def parse_bot_response_to_text(response_text):
+    ret_json = json.loads(response_text)
+    ret = ""
+    ret += ret_json["Summary"]
+    ret += "\n"
+    for rec in ret_json["Recommended Restaurants"]:
+        ret += str(rec)
+        ret += "\n"
+    ret += ret_json["Ask"]
+    return ret
 
 
 if __name__ == "__main__":

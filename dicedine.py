@@ -1,11 +1,8 @@
-import json
-
 import streamlit as st
 
-from dicedine.backend.gpt import DiceDineGPT
-from dicedine.backend.map import get_map_df
-from dicedine.utils.logger import MainLogger
 from dicedine.backend.auth import create_authenticator
+from dicedine.backend.gpt import DiceDineGPT, parse_bot_response_address, parse_bot_response_to_text
+from dicedine.utils.logger import MainLogger
 
 gpt_client = DiceDineGPT()
 
@@ -15,15 +12,6 @@ logger = MainLogger.get_logger()
 def get_bot_response(user_input):
     ret = gpt_client.recommendation_assistant(user_input)
     return ret.choices[0].message.content
-
-
-def parse_bot_response_address(response_text):
-    addresses = []
-    ret_json = json.loads(response_text)["Recommended Restaurants"]
-    for _, item in enumerate(ret_json):
-        addresses.append(item["Address"])
-
-    return addresses
 
 
 def authorized_user_functions():
@@ -36,35 +24,44 @@ def authorized_user_functions():
 
     # Handling user input
     if user_input:
-        # Add user input to conversation
-        st.session_state.conversation.append("You: " + user_input)
+        with st.status("Dicing your choice ..."):
+            st.session_state.conversation.clear()
+            # Add user input to conversation
+            st.session_state.conversation.append("You: " + user_input)
 
-        # Get bot response and add to conversation
-        response_text = get_bot_response(user_input)
-        logger.info(f"Returned text: {response_text}")
-        st.session_state.conversation.append(response_text)
+            # Get bot response and add to conversation
+            response_text = get_bot_response(user_input)
+            logger.info(f"Returned text: {response_text}")
+            st.session_state.conversation.append(parse_bot_response_to_text(response_text))
+            address_df = parse_bot_response_address(response_text)
 
-        address_df = parse_bot_response_address(response_text)
-        st.map(get_map_df(address_df))
+        st.map(address_df)
 
     # Display conversation
-    for message in st.session_state.conversation:
-        st.text(message)
+    with st.chat_message("Assistant"):
+        for message in st.session_state.conversation:
+            st.write(message)
 
 
 # Main App
 def main():
-    st.title("Dice & Dine")
+    st.set_page_config(page_title="Dice & Dine", page_icon="./resources/logo.png")
+    col1, col2 = st.columns(2)
+    col1.title("Dice & Dine")
+    col2.image("./resources/logo.png", use_column_width="always")
     authenticator = create_authenticator()
     name, authentication_status, _ = authenticator.login('Login', 'sidebar')
     if authentication_status:
-        authenticator.logout('Logout', 'main')
-        st.write(f'Welcome {name}')
+        with col1:
+            st.header(f'Welcome {name}', divider='red')
+            authenticator.logout('Logout', 'main')
         authorized_user_functions()
     elif authentication_status is False:
-        st.error('Username/password is incorrect')
+        with col1:
+            st.error('Username/password is incorrect')
     elif authentication_status is None:
-        st.warning('Please enter your username and password')
+        with col1:
+            st.warning('Please enter your username and password')
 
 
 # Main App
