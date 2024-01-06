@@ -16,13 +16,14 @@ def geocode_address(address):
             return location.latitude, location.longitude
         else:
             return None, None
-    except GeopyError:
+    except (GeopyError, ValueError):
         logger.info(f"Unable to geocode address: {address}")
         return None, None
 
 
 def get_map_df(addresses: list[str]):
     geocodes = []
+
     for address in addresses:
         lon, lat = geocode_address(address)
         if lon and lat:
