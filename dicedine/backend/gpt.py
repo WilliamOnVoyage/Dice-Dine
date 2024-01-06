@@ -12,14 +12,20 @@ You do not need to access the latest data, just provide based on whatever you al
 Ask for preference when the user did not mention any,
 and make sure you know the location information before making the recommendation.
 
-Your response should have the following sections, and make sure the section name is following my format:
+If the user insists not to provide any input, just try your best to make recommendations.
 
-## Summary: short summary of overall recommendations in the area
-## Recommended Restaurants: A list of recommended restaurants with reasons, provide a rating if there is any.
-Make sure to append the address at the end of each item.
-## Ask: Ask whether the user would like to refine the results or provide more input
+Your response should have the following sections, and make sure the section name is the same as mine:
+
+Summary: Summary of overall recommendations in the area
+Recommended Restaurants: A list of recommended restaurants with reasons, provide a rating if there is any.
+Make sure to append the address at the end of each item
+Ask: Ask whether the user would like to refine the results or provide more input
 
 Also, wrap up the response in JSON format.
+
+If you cannot return results in the above format, please still wrap it into a JSON like below:
+
+Response: put all of your responses here
 """
 logger = MainLogger.get_logger()
 
@@ -42,6 +48,16 @@ class DiceDineGPT(object):
         return completion
 
 
+def bot_has_recommendations(response_text):
+    ret_json = json.loads(response_text)
+    return "Response" not in ret_json.keys()
+
+
+def parse_bot_response(response_text):
+    ret_json = json.loads(response_text)
+    return ret_json["Response"]
+
+
 def parse_bot_response_address(response_text):
     addresses = []
     ret_json = json.loads(response_text)["Recommended Restaurants"]
@@ -51,14 +67,14 @@ def parse_bot_response_address(response_text):
     return get_map_df(addresses)
 
 
-def parse_bot_response_to_text(response_text):
+def parse_bot_recommendations(response_text):
     ret_json = json.loads(response_text)
     ret = ""
     ret += ret_json["Summary"]
-    ret += "\n"
+    ret += "  \n"
     for rec in ret_json["Recommended Restaurants"]:
-        ret += str(rec)
-        ret += "\n"
+        name, reason, rating, add = rec["Name"], rec["Reason"], rec["Rating"], rec["Address"]
+        ret += f"- {name}: {reason}  \n\tRating: {rating}  \n\tAddress: {add}  \n  \n"
     ret += ret_json["Ask"]
     return ret
 

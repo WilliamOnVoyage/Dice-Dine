@@ -1,7 +1,8 @@
 import streamlit as st
 
 from dicedine.backend.auth import create_authenticator
-from dicedine.backend.gpt import DiceDineGPT, parse_bot_response_address, parse_bot_response_to_text
+from dicedine.backend.gpt import (DiceDineGPT, parse_bot_response, parse_bot_response_address,
+                                  parse_bot_recommendations, bot_has_recommendations)
 from dicedine.utils.logger import MainLogger
 
 gpt_client = DiceDineGPT()
@@ -27,15 +28,18 @@ def authorized_user_functions():
         with st.status("Dicing your choice ..."):
             st.session_state.conversation.clear()
             # Add user input to conversation
-            st.session_state.conversation.append("You: " + user_input)
+            st.session_state.conversation.append(f"You: {user_input}")
 
             # Get bot response and add to conversation
             response_text = get_bot_response(user_input)
             logger.info(f"Returned text: {response_text}")
-            st.session_state.conversation.append(parse_bot_response_to_text(response_text))
-            address_df = parse_bot_response_address(response_text)
 
-        st.map(address_df)
+        if bot_has_recommendations(response_text):
+            st.session_state.conversation.append(f"Dice: {parse_bot_recommendations(response_text)}")
+            address_df = parse_bot_response_address(response_text)
+            st.map(address_df)
+        else:
+            st.session_state.conversation.append(f"Dice: {parse_bot_response(response_text)}")
 
     # Display conversation
     with st.chat_message("Assistant"):
