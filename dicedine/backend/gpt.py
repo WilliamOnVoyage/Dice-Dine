@@ -17,14 +17,17 @@ If the user insists on not providing any input, just try your best to make recom
 Your response should have the following sections, and make sure the section name is the same as mine:
 
 Summary: Summary of overall recommendations in the area
-Recommended Restaurants: A list of recommended restaurants with reasons, provide a rating if there is any.
-Make sure to append the address at the end of each item
+Recommended Restaurants: A list of recommended restaurants with below sections:
+    Name: name of the restaurant
+    Reason: reason for making the recommendation
+    Rating: user rating
+    Address: address of the restaurant
 Ask: Ask whether the user would like to refine the results or provide more input
 
 Also, wrap up the response in JSON format.
 
-If you cannot return results in the above format, or Recommended Restaurants has no result, 
-please don't wrap up in JSON and output your response in plain text.
+If you cannot return results in the above format, or Recommended Restaurants has no result, please don't wrap up in JSON
+ and output your response in plain text.
 """
 logger = MainLogger.get_logger()
 
@@ -50,10 +53,9 @@ class DiceDineGPT(object):
 def bot_has_recommendations(response_text):
     try:
         ret_json = json.loads(response_text)
-        return ("Summary" in ret_json.keys() and "Recommended Restaurants" in ret_json.keys()
-                and "Ask" in ret_json.keys())
     except (json.decoder.JSONDecodeError, TypeError):
         return False
+    return "Summary" in ret_json.keys() and "Recommended Restaurants" in ret_json.keys() and "Ask" in ret_json.keys()
 
 
 def parse_bot_response(response_text):

@@ -31,7 +31,9 @@ class DiceDineGPTTestCase(unittest.TestCase):
     def test_parse_bot_response_address(self):
         sample_ret = """
         {
-          "Summary": "Sichuan cuisine is known for its bold flavors, particularly the piquancy and spiciness resulting from liberal use of garlic and chili peppers, as well as the unique flavor of the Sichuan peppercorn. Below are some recommended Sichuan restaurants near the 95051 ZIP code (Santa Clara, CA).",
+          "Summary": "Sichuan cuisine is known for its bold flavors, particularly the piquancy and spiciness resulting
+          from liberal use of garlic and chili peppers, as well as the unique flavor of the Sichuan peppercorn.
+          Below are some recommended Sichuan restaurants near the 95051 ZIP code (Santa Clara, CA).",
           "Recommended Restaurants": [
             {
               "Name": "Sichuan Impression",
@@ -41,7 +43,7 @@ class DiceDineGPTTestCase(unittest.TestCase):
             },
             {
               "Name": "Chengdu Taste",
-              "Reason": "Offers a variety of traditional Sichuan dishes, praised for their authenticity and spice level.",
+              "Reason": "Offers a variety of traditional Sichuan dishes.",
               "Rating": "4.2/5",
               "Address": "19772 Stevens Creek Blvd, Cupertino, CA 95014"
             },
