@@ -29,33 +29,30 @@ class DiceDineGPTTestCase(unittest.TestCase):
         self.assertTrue(bot_has_recommendations(ret_full))
 
     def test_parse_bot_response_address(self):
-        sample_ret = """
-        {
-          "Summary": "Sichuan cuisine is known for its bold flavors, particularly the piquancy and spiciness resulting
-          from liberal use of garlic and chili peppers, as well as the unique flavor of the Sichuan peppercorn.
-          Below are some recommended Sichuan restaurants near the 95051 ZIP code (Santa Clara, CA).",
-          "Recommended Restaurants": [
-            {
-              "Name": "Sichuan Impression",
-              "Reason": "Authentic Sichuan dishes with a modern twist, known for their spicy and flavorful options.",
-              "Rating": "4.5/5",
-              "Address": "3948 Rivermark Plaza, Santa Clara, CA 95054"
-            },
-            {
-              "Name": "Chengdu Taste",
-              "Reason": "Offers a variety of traditional Sichuan dishes.",
-              "Rating": "4.2/5",
-              "Address": "19772 Stevens Creek Blvd, Cupertino, CA 95014"
-            },
-            {
-              "Name": "Little Sichuan",
-              "Reason": "A local favorite for Sichuan hot pots and street food-style dishes.",
-              "Rating": "4.0/5",
-              "Address": "1245 Jacklin Rd, Milpitas, CA 95035"
-            }
-          ],
-          "Ask": "Would you like to refine the results or provide more input?"
-        }
-        """
+        sample_ret = json.dumps({
+            "Summary": "Sichuan cuisine is known for its bold flavors.",
+            "Recommended Restaurants": [
+                {
+                    "Name": "Sichuan Impression",
+                    "Reason": "Authentic Sichuan dishes with a modern twist.",
+                    "Rating": "4.5/5",
+                    "Address": "3948 Rivermark Plaza, Santa Clara, CA 95054"
+                },
+                {
+                    "Name": "Chengdu Taste",
+                    "Reason": "Offers a variety of traditional Sichuan dishes.",
+                    "Rating": "4.2/5",
+                    "Address": "19772 Stevens Creek Blvd, Cupertino, CA 95014"
+                },
+                {
+                    "Name": "Little Sichuan",
+                    "Reason": "A local favorite for Sichuan hot pots and street food-style dishes.",
+                    "Rating": "4.0/5",
+                    "Address": "1245 Jacklin Rd, Milpitas, CA 95035"
+                }
+            ],
+            "Ask": "Would you like to refine the results or provide more input?"
+        })
+
         add_df = parse_bot_response_address(sample_ret)
         self.assertEquals(add_df.shape, (3, 2))
