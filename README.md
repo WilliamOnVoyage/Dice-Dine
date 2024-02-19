@@ -7,7 +7,7 @@ Run ```python setup.py install``` to install this package and dependencies.
 ## Run
 
 ### Website
-Web server: [dicedine.py](dicedine.py)
+Web server: [app.py](app.py)
 
 ## Development
 
