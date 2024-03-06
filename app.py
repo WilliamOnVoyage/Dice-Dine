@@ -8,15 +8,19 @@ from flask import url_for, redirect, session
 
 from dicedine.backend.gpt import (DiceDineGPT, parse_bot_response, parse_bot_response_address,
                                   parse_bot_recommendations, bot_has_recommendations)
+from dicedine.backend.secrets import SecretsManager
+
+# Get secrets and set as env vars
+secrets = SecretsManager()
 
 gpt_client = DiceDineGPT()
 app = Flask(__name__, template_folder='./templates')
 app.secret_key = os.urandom(12)
-
 app.config["GOOGLE_OAUTH_CLIENT_ID"] = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
 app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
-CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+
 oauth = OAuth(app)
+CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
 
 
 @app.route('/auth/google')
