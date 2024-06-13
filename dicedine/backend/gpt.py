@@ -42,7 +42,7 @@ class DiceDineGPT(object):
     def recommendation_assistant(self, payload: str):
         logger.info(f"Payload: {payload}")
         completion = self.client.chat.completions.create(
-            model="gpt-4-1106-preview",
+            model="gpt-4o",
             messages=[
                 {"role": "system",
                  "content": SYSTEM_CONTENT},
