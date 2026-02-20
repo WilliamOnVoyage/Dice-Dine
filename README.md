@@ -1,14 +1,27 @@
-# Dice-Dine
-GPT based dining recommendation
+# Dice-Dine 🎲🍽️
 
-## Install Package
-Run ```python setup.py install``` to install this package and dependencies.
+AI-powered dining recommendation service.
 
-## Run
+Let your AI foodie companion find the perfect spot for you!
 
-### Website
-Web server: [dicedine.py](dicedine.py)
+## Hosted Version
 
-## Development
+The live version is hosted at [https://www.dice-dine.com/](https://www.dice-dine.com/).
 
-See [DEVELOPMENT.md](./DEVELOPMENT.md)
+## Features
+
+- **AI Recommendations**: Powered by `gpt-5.2`.
+- **Visual Discovery**: Interactive map with restaurant locations.
+- **User Accounts**: Sign in with Google.
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS
+- **Auth**: NextAuth.js (Google Provider)
+- **Map**: Leaflet / React Leaflet
+- **AI**: OpenAI API
+
+## Local Development
+
+See [DEVELOPMENT.md](./DEVELOPMENT.md).
