@@ -1,0 +1,7 @@
+{
+    "tagline": "AI-powered dining concierge that helps you discover the perfect place to eat through natural language conversation.",
+    "publicDescription": "Dice-Dine combines the intelligence of GPT with geospatial data to provide personalized, actionable restaurant recommendations. It features a conversational interface for expressing dining preferences, and plots curated results on an interactive map. Features include automatic location awareness, contextual 'roll-a-dice' randomizers, and a clean, minimalist UI.",
+    "demoUrl": "",
+    "liveUrl": "https://www.dice-dine.com/",
+    "thumbnail": ""
+}
