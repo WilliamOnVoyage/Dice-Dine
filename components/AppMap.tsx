@@ -20,6 +20,7 @@ interface Restaurant {
     coords?: [number, number]; // [lat, lon]
     Rating?: string;
     Reason?: string;
+    Website?: string;
 }
 
 interface AppMapProps {
@@ -77,8 +78,14 @@ export default function AppMap({ restaurants, userLocation }: AppMapProps) {
                     <Marker key={idx} position={place.coords}>
                         <Popup>
                             <div className="p-1">
-                                <h3 className="font-bold text-base">{place.Name}</h3>
-                                <p className="text-sm text-gray-600">{place.Address}</p>
+                                {place.Website ? (
+                                    <a href={place.Website} target="_blank" rel="noopener noreferrer" className="font-bold text-base text-slate-900 hover:text-rose-600 hover:underline transition-colors block">
+                                        {place.Name}
+                                    </a>
+                                ) : (
+                                    <h3 className="font-bold text-base">{place.Name}</h3>
+                                )}
+                                <p className="text-sm text-gray-600 mt-1">{place.Address}</p>
                                 {place.Rating && <p className="text-xs text-orange-500 font-semibold mt-1">Rating: {place.Rating}</p>}
                             </div>
                         </Popup>

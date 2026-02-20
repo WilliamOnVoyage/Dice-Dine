@@ -16,6 +16,7 @@ Recommended Restaurants: A list of recommended restaurants with below sections:
     Reason: reason for making the recommendation
     Rating: user rating
     Address: address of the restaurant
+    Website: the official website or a review site link (e.g. Yelp/Google Maps) for the restaurant. Provide a valid URL.
 Ask: Ask whether the user would like to refine the results or provide more input
 
 Also, wrap up the response in JSON format.

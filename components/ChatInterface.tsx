@@ -179,7 +179,13 @@ export default function ChatInterface({ onRecommendation, onLocationUpdate }: Ch
                                         <div className="flex flex-col gap-3 mt-2">
                                             {m.recommendations.map((rec: any, idx: number) => (
                                                 <div key={idx} className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col gap-1.5 transition-colors hover:border-gray-300">
-                                                    <h4 className="font-bold text-slate-900">{rec.Name}</h4>
+                                                    {rec.Website ? (
+                                                        <a href={rec.Website} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-900 hover:text-rose-600 hover:underline transition-colors w-fit">
+                                                            {rec.Name}
+                                                        </a>
+                                                    ) : (
+                                                        <h4 className="font-bold text-slate-900">{rec.Name}</h4>
+                                                    )}
                                                     <p className="text-sm text-slate-500 font-medium">{rec.Address}</p>
                                                     {rec.Rating && (
                                                         <p className="text-xs text-rose-600 font-bold bg-rose-50 w-fit px-2 py-0.5 rounded-md mt-1">Rating {rec.Rating}</p>
