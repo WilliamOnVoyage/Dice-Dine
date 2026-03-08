@@ -24,7 +24,7 @@ export function parseBotResponse(responseText: string) {
                 data: retJson,
             };
         }
-    } catch (e) {
+    } catch (_e) {
         // If JSON parse fails, it's a plain text response
     }
 

@@ -3,14 +3,7 @@
 import { APIProvider, Map, AdvancedMarker, InfoWindow, useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 
-interface Restaurant {
-    Name: string;
-    Address: string;
-    coords?: [number, number]; // [lat, lon]
-    Rating?: string;
-    Reason?: string;
-    Website?: string;
-}
+import { Restaurant } from "@/lib/types";
 
 interface AppMapProps {
     restaurants: Restaurant[];

@@ -4,15 +4,16 @@ import { useState, useRef, useEffect } from "react";
 import { Send, MapPin, Dice5 } from "lucide-react";
 import { parseBotResponse } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
+import { Restaurant } from "@/lib/types";
 
 interface Message {
     role: "user" | "assistant";
     content: string;
-    recommendations?: any[];
+    recommendations?: Restaurant[];
 }
 
 interface ChatInterfaceProps {
-    onRecommendation: (data: any) => void;
+    onRecommendation: (data: Restaurant[]) => void;
     onLocationUpdate?: (location: string) => void;
 }
 
@@ -145,7 +146,7 @@ export default function ChatInterface({ onRecommendation, onLocationUpdate }: Ch
                 {messages.length === 0 && (
                     <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
                         <div className="text-gray-400">
-                            <p className="font-medium">Start by telling me what you're in the mood for!</p>
+                            <p className="font-medium">Start by telling me what you&apos;re in the mood for!</p>
                         </div>
                         <div className="grid grid-cols-1 gap-2 w-full max-w-xs mb-4">
                             {PRESET_PROMPTS.map((prompt, idx) => (
@@ -177,7 +178,7 @@ export default function ChatInterface({ onRecommendation, onLocationUpdate }: Ch
                                     <ReactMarkdown>{m.content}</ReactMarkdown>
                                     {m.recommendations && m.recommendations.length > 0 && (
                                         <div className="flex flex-col gap-3 mt-2">
-                                            {m.recommendations.map((rec: any, idx: number) => (
+                                            {m.recommendations.map((rec: Restaurant, idx: number) => (
                                                 <div key={idx} className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col gap-1.5 transition-colors hover:border-gray-300">
                                                     {rec.Website ? (
                                                         <a href={rec.Website} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-900 hover:text-rose-600 hover:underline transition-colors w-fit">
@@ -191,7 +192,7 @@ export default function ChatInterface({ onRecommendation, onLocationUpdate }: Ch
                                                         <p className="text-xs text-rose-600 font-bold bg-rose-50 w-fit px-2 py-0.5 rounded-md mt-1">Rating {rec.Rating}</p>
                                                     )}
                                                     {rec.Reason && (
-                                                        <p className="text-sm text-slate-700 italic mt-2 leading-relaxed">"{rec.Reason}"</p>
+                                                        <p className="text-sm text-slate-700 italic mt-2 leading-relaxed">&quot;{rec.Reason}&quot;</p>
                                                     )}
                                                 </div>
                                             ))}

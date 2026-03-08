@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import LogoutButton from "@/components/LogoutButton";
 import ChatInterface from "@/components/ChatInterface";
+import { Restaurant } from "@/lib/types";
 
 const AppMap = dynamic(() => import("@/components/AppMap"), { ssr: false });
 
@@ -14,7 +16,7 @@ interface User {
 }
 
 export default function DashboardHelper({ user }: { user?: User }) {
-    const [restaurants, setRestaurants] = useState<any[]>([]);
+    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [userCoords, setUserCoords] = useState<[number, number] | null>(null);
 
     const handleLocationUpdate = async (location: string) => {
@@ -48,7 +50,7 @@ export default function DashboardHelper({ user }: { user?: User }) {
         }
     };
 
-    const handleRecommendation = async (recs: any[]) => {
+    const handleRecommendation = async (recs: Restaurant[]) => {
         // Optimistic update without coords (Map handles missing coords gracefully?)
         // AppMap maps `place.coords` and checks existence. 
         // If no coords, no marker. That's fine.
@@ -61,7 +63,7 @@ export default function DashboardHelper({ user }: { user?: User }) {
                     const res = await fetch(`/api/geocode?address=${encodeURIComponent(r.Address)}`);
                     const data = await res.json();
                     if (data.lat && data.lon) {
-                        return { ...r, coords: [data.lat, data.lon] };
+                        return { ...r, coords: [data.lat, data.lon] as [number, number] };
                     }
                 } catch (e) {
                     console.error(e);
@@ -85,7 +87,7 @@ export default function DashboardHelper({ user }: { user?: User }) {
                         <span className="font-semibold text-slate-900">{user?.name}</span>
                         <span className="text-xs text-slate-500">{user?.email}</span>
                     </div>
-                    {user?.image && <img src={user.image} alt={user.name || "User"} className="w-10 h-10 rounded-full border border-gray-200" />}
+                    {user?.image && <Image src={user.image} alt={user.name || "User"} width={40} height={40} className="w-10 h-10 rounded-full border border-gray-200" />}
                     <LogoutButton />
                 </div>
             </header>

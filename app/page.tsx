@@ -17,7 +17,7 @@ export default async function Home() {
           Dice-Dine<span className="text-rose-600">.</span>
         </h1>
         <p className="text-xl text-slate-500 mb-12 max-w-2xl leading-relaxed">
-          Your AI-powered foodie companion. Tell us what you crave, and we'll find the perfect spot for you.
+          Your AI-powered foodie companion. Tell us what you crave, and we&apos;ll find the perfect spot for you.
         </p>
         <LoginButton />
 
@@ -32,7 +32,7 @@ export default async function Home() {
           </div>
           <div className="p-6 transition-all hover:-translate-y-1">
             <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">03. Save Favorites</h3>
-            <p className="text-slate-500 leading-relaxed text-sm">Keep track of the best spots you've found for future dining.</p>
+            <p className="text-slate-500 leading-relaxed text-sm">Keep track of the best spots you&apos;ve found for future dining.</p>
           </div>
         </div>
       </div>
