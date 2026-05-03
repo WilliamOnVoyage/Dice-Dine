@@ -2,15 +2,20 @@ import { OpenAI } from "openai";
 import { NextResponse } from "next/server";
 import { SYSTEM_PROMPT } from "@/lib/constants";
 
-const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+let client: OpenAI | null = null;
+
+function getClient(): OpenAI {
+    if (!client) {
+        client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    }
+    return client;
+}
 
 export async function POST(req: Request) {
     try {
         const { message } = await req.json();
 
-        const response = await client.responses.create({
+        const response = await getClient().responses.create({
             model: "gpt-5.2",
             instructions: SYSTEM_PROMPT,
             input: message,
