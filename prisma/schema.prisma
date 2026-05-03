@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  savedPlaces   SavedPlace[]
+  searchQueries SearchQuery[]
+  createdAt     DateTime      @default(now())
+}
+
+model SavedPlace {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  rating    String?
+  reason    String?
+  website   String?
+  latitude  Float?
+  longitude Float?
+  savedAt   DateTime @default(now())
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name, address])
+}
+
+model SearchQuery {
+  id              String   @id @default(cuid())
+  query           String
+  location        String?
+  responseType    String   // "recommendation", "text", "error"
+  restaurantNames String?  // JSON string or comma separated if we want
+  createdAt       DateTime @default(now())
+  
+  userId          String?  // Optional in case anonymous users can query
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}

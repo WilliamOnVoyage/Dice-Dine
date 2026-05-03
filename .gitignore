@@ -43,3 +43,5 @@ next-env.d.ts
 # User favorites data
 data/favorites/
 data/favorites-test/
+.env
+prisma/data/
