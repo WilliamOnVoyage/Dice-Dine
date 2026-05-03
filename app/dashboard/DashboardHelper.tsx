@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import LogoutButton from "@/components/LogoutButton";
 import ChatInterface from "@/components/ChatInterface";
-import { Restaurant } from "@/lib/types";
+import SavedPlaces from "@/components/SavedPlaces";
+import { Restaurant, SavedRestaurant } from "@/lib/types";
 
 const AppMap = dynamic(() => import("@/components/AppMap"), { ssr: false });
 
@@ -18,6 +19,25 @@ interface User {
 export default function DashboardHelper({ user }: { user?: User }) {
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [userCoords, setUserCoords] = useState<[number, number] | null>(null);
+    const [savedNames, setSavedNames] = useState<Set<string>>(new Set());
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+    // Fetch saved names on mount to know which restaurants are already saved
+    useEffect(() => {
+        let cancelled = false;
+        fetch("/api/favorites")
+            .then((res) => res.json())
+            .then((data) => {
+                if (!cancelled && data.favorites) {
+                    const names = new Set<string>(
+                        data.favorites.map((f: SavedRestaurant) => `${f.Name}|${f.Address}`)
+                    );
+                    setSavedNames(names);
+                }
+            })
+            .catch((e) => console.error("Failed to fetch saved names", e));
+        return () => { cancelled = true; };
+    }, []);
 
     const handleLocationUpdate = async (location: string) => {
         if (!location.trim()) {
@@ -51,9 +71,7 @@ export default function DashboardHelper({ user }: { user?: User }) {
     };
 
     const handleRecommendation = async (recs: Restaurant[]) => {
-        // Optimistic update without coords (Map handles missing coords gracefully?)
-        // AppMap maps `place.coords` and checks existence. 
-        // If no coords, no marker. That's fine.
+        // Optimistic update without coords (Map handles missing coords gracefully)
         setRestaurants(recs);
 
         // Fetch coords
@@ -72,6 +90,35 @@ export default function DashboardHelper({ user }: { user?: User }) {
             })
         );
         setRestaurants(updatedRecs);
+    };
+
+    const handleSaveRestaurant = async (restaurant: Restaurant) => {
+        try {
+            const res = await fetch("/api/favorites", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ restaurant }),
+            });
+
+            if (res.ok) {
+                setSavedNames((prev) => {
+                    const next = new Set(prev);
+                    next.add(`${restaurant.Name}|${restaurant.Address}`);
+                    return next;
+                });
+                setRefreshTrigger((prev) => prev + 1);
+            }
+        } catch (e) {
+            console.error("Failed to save restaurant", e);
+        }
+    };
+
+    const handleSelectSavedPlace = (restaurant: SavedRestaurant) => {
+        // Show the saved restaurant on the map
+        setRestaurants([restaurant]);
+        if (restaurant.coords) {
+            setUserCoords(null); // clear user location to focus on the restaurant
+        }
     };
 
     return (
@@ -94,9 +141,20 @@ export default function DashboardHelper({ user }: { user?: User }) {
 
             {/* Main Content */}
             <main className="flex-1 flex flex-col md:flex-row overflow-hidden p-4 md:p-6 gap-6 z-10">
-                {/* Left: Chat */}
-                <div className="w-full md:w-1/3 flex flex-col h-full min-h-[400px]">
-                    <ChatInterface onRecommendation={handleRecommendation} onLocationUpdate={handleLocationUpdate} />
+                {/* Left: Chat + Saved Places */}
+                <div className="w-full md:w-1/3 flex flex-col h-full min-h-[400px] gap-4">
+                    <div className="flex-1 min-h-0">
+                        <ChatInterface
+                            onRecommendation={handleRecommendation}
+                            onLocationUpdate={handleLocationUpdate}
+                            onSaveRestaurant={handleSaveRestaurant}
+                            savedNames={savedNames}
+                        />
+                    </div>
+                    <SavedPlaces
+                        onSelectPlace={handleSelectSavedPlace}
+                        refreshTrigger={refreshTrigger}
+                    />
                 </div>
 
                 {/* Right: Map */}

@@ -6,3 +6,7 @@ export interface Restaurant {
     Website?: string;
     coords?: [number, number];
 }
+
+export interface SavedRestaurant extends Restaurant {
+    savedAt: string; // ISO date string
+}

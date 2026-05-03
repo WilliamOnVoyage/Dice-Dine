@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, MapPin, Dice5 } from "lucide-react";
+import { Send, MapPin, Dice5, Bookmark, BookmarkCheck } from "lucide-react";
 import { parseBotResponse } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { Restaurant } from "@/lib/types";
@@ -15,9 +15,11 @@ interface Message {
 interface ChatInterfaceProps {
     onRecommendation: (data: Restaurant[]) => void;
     onLocationUpdate?: (location: string) => void;
+    onSaveRestaurant?: (restaurant: Restaurant) => void;
+    savedNames?: Set<string>; // Set of "Name|Address" keys for already-saved restaurants
 }
 
-export default function ChatInterface({ onRecommendation, onLocationUpdate }: ChatInterfaceProps) {
+export default function ChatInterface({ onRecommendation, onLocationUpdate, onSaveRestaurant, savedNames }: ChatInterfaceProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -178,15 +180,32 @@ export default function ChatInterface({ onRecommendation, onLocationUpdate }: Ch
                                     <ReactMarkdown>{m.content}</ReactMarkdown>
                                     {m.recommendations && m.recommendations.length > 0 && (
                                         <div className="flex flex-col gap-3 mt-2">
-                                            {m.recommendations.map((rec: Restaurant, idx: number) => (
-                                                <div key={idx} className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col gap-1.5 transition-colors hover:border-gray-300">
-                                                    {rec.Website ? (
-                                                        <a href={rec.Website} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-900 hover:text-rose-600 hover:underline transition-colors w-fit">
-                                                            {rec.Name}
-                                                        </a>
-                                                    ) : (
-                                                        <h4 className="font-bold text-slate-900">{rec.Name}</h4>
-                                                    )}
+                                            {m.recommendations.map((rec: Restaurant, idx: number) => {
+                                                const isSaved = savedNames?.has(`${rec.Name}|${rec.Address}`);
+                                                return (
+                                                <div key={idx} className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col gap-1.5 transition-colors hover:border-gray-300 relative">
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <div className="flex-1">
+                                                            {rec.Website ? (
+                                                                <a href={rec.Website} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-900 hover:text-rose-600 hover:underline transition-colors w-fit">
+                                                                    {rec.Name}
+                                                                </a>
+                                                            ) : (
+                                                                <h4 className="font-bold text-slate-900">{rec.Name}</h4>
+                                                            )}
+                                                        </div>
+                                                        <button
+                                                            onClick={() => !isSaved && onSaveRestaurant?.(rec)}
+                                                            className={`p-1.5 rounded-md transition-all ${
+                                                                isSaved
+                                                                    ? "text-rose-600 bg-rose-50 cursor-default"
+                                                                    : "text-slate-300 hover:text-rose-600 hover:bg-rose-50"
+                                                            }`}
+                                                            title={isSaved ? "Saved" : "Save to favorites"}
+                                                        >
+                                                            {isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
+                                                        </button>
+                                                    </div>
                                                     <p className="text-sm text-slate-500 font-medium">{rec.Address}</p>
                                                     {rec.Rating && (
                                                         <p className="text-xs text-rose-600 font-bold bg-rose-50 w-fit px-2 py-0.5 rounded-md mt-1">Rating {rec.Rating}</p>
@@ -194,8 +213,8 @@ export default function ChatInterface({ onRecommendation, onLocationUpdate }: Ch
                                                     {rec.Reason && (
                                                         <p className="text-sm text-slate-700 italic mt-2 leading-relaxed">&quot;{rec.Reason}&quot;</p>
                                                     )}
-                                                </div>
-                                            ))}
+                                                </div>);
+                                            })}
                                         </div>
                                     )}
                                 </>
