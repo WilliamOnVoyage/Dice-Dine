@@ -127,7 +127,7 @@ export async function DELETE(req: Request) {
 
         const count = await prisma.savedPlace.count({ where: { userId: user.id } });
         return NextResponse.json({ count });
-    } catch (e) {
+    } catch (_e) {
         return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 }

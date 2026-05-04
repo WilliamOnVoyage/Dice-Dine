@@ -50,7 +50,7 @@ export async function POST(req: Request) {
                 let restaurantNames = null;
 
                 if (parsed.type === "recommendation" && parsed.data["Recommended Restaurants"]) {
-                    const names = parsed.data["Recommended Restaurants"].map((r: any) => r.Name);
+                    const names = parsed.data["Recommended Restaurants"].map((r: { Name: string }) => r.Name);
                     if (names.length > 0) {
                         restaurantNames = JSON.stringify(names);
                     }
